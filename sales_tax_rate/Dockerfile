@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=$BUILDPLATFORM rust:1.64 AS buildbase
+FROM --platform=$BUILDPLATFORM rust:1 AS buildbase
 WORKDIR /src
 RUN <<EOT bash
     set -ex
@@ -19,8 +19,8 @@ COPY src ./src
 # Build the Wasm binary
 RUN cargo build --target wasm32-wasi --release
 # This line builds the AOT Wasm binary
-RUN /root/.wasmedge/bin/wasmedgec target/wasm32-wasi/release/sales_tax_rate_lookup.wasm sales_tax_rate_lookup.wasm
+RUN #/root/.wasmedge/bin/wasmedgec target/wasm32-wasi/release/sales_tax_rate_lookup.wasm sales_tax_rate_lookup.wasm
 
 FROM scratch
 ENTRYPOINT [ "sales_tax_rate_lookup.wasm" ]
-COPY --link --from=build /src/sales_tax_rate_lookup.wasm /sales_tax_rate_lookup.wasm
+COPY --link --from=build /src/target/wasm32-wasi/release/sales_tax_rate_lookup.wasm /sales_tax_rate_lookup.wasm

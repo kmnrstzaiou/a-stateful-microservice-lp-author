@@ -18,7 +18,6 @@
       <table id="order-table" class="d-none table table-striped">
         <thead>
           <tr>
-            <th>Id</th>
             <th>Product Id</th>
             <th>Quantity</th>
             <th>Subtotal</th>
@@ -35,11 +34,6 @@
       <div id="add-order-wrapper" class="row">
         <div class="col-6">
                 <form id="add-order-form">
-                  <div class="mb-3">
-                    <label for="order-id" class="form-label">Order Id</label>
-                    <input type="number" required class="form-control" id="order-id" aria-describedby="orderIdHelp">
-                    <div id="orderIdHelp" class="form-text">The ID of the order</div>
-                  </div>
                   <div class="mb-3">
                     <label for="product-id" class="form-label">Product Id</label>
                     <input type="number" required class="form-control" id="product-id" aria-describedby="productIdHelp">
@@ -64,6 +58,11 @@
                     <label for="shippingZip" class="form-label">Shipping Zip Code</label>
                     <input type="text" required class="form-control" id="shippingZip" aria-describedby="zipHelp">
                     <div id="zipHelp" class="form-text">The receipient zip code</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="shippingCost" class="form-label">Shipping Cost</label>
+                    <input type="number" required class="form-control" id="shippingCost" aria-describedby="shippingCostHelp">
+                    <div id="shippingCostHelp" class="form-text">The shipping cost</div>
                   </div>
 
                   <button type="button" id="save" class="btn btn-success">Save Order</button>

@@ -5,12 +5,12 @@
   const orderTableEle = document.getElementById("order-table");
   const orderTableBodyEle = document.querySelector("#order-table tbody");
 
-  const orderIdField = document.getElementById("order-id");
   const productIdField = document.getElementById("product-id");
   const quantityField = document.getElementById("quantity");
   const subtotalField = document.getElementById("subtotal");
   const shippingAddressField = document.getElementById("shippingAddress");
   const shippingZipField = document.getElementById("shippingZip");
+  const shippingCostField = document.getElementById("shippingCost");
 
   function fetchOrders() {
     fetch("http://localhost:8003/orders")
@@ -42,16 +42,14 @@
     }
 
     orders.forEach((order) => {
-      const orderId = order.order_id;
-
       const row = document.createElement("tr");
 
-      row.appendChild(createCell(order.order_id));
       row.appendChild(createCell(order.product_id));
       row.appendChild(createCell(order.quantity));
       row.appendChild(createCell(order.subtotal));
       row.appendChild(createCell(order.shipping_address));
       row.appendChild(createCell(order.shipping_zip));
+      row.appendChild(createCell(order.shipping_cost));
       row.appendChild(createCell(order.total));
 
       orderTableBodyEle.appendChild(row);
@@ -70,12 +68,12 @@
 
   function onSaveButton() {
     const data = {
-      order_id : parseFloat(orderIdField.value),
       product_id : parseFloat(productIdField.value),
       quantity : parseFloat(quantityField.value),
       subtotal : parseFloat(subtotalField.value),
       shipping_address : shippingAddressField.value,
       shipping_zip : shippingZipField.value,
+      shipping_cost: parseFloat(shippingCostField.value),
       total : 0.0,
     };
 

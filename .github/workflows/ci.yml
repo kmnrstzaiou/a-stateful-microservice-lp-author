@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.9
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: whalehello
+        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 20s --health-timeout 10s --health-retries 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-wasi
+          override: true
+      - name: install wasmedge
+        run: |
+          curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
+      - name: cargo build and wasmedge
+        run: |
+          source $HOME/.wasmedge/env
+          cargo build --target wasm32-wasi --release
+          nohup wasmedge target/wasm32-wasi/release/sales_tax_rate_lookup.wasm &
+          echo $! > sales_tax_rate.pid
+          nohup wasmedge --env "SALES_TAX_RATE_SERVICE=http://127.0.0.1:8001/find_rate" --env "DATABASE_URL=mysql://root:whalehello@127.0.0.1:3306/mysql" target/wasm32-wasi/release/order_management.wasm &
+          echo $! > order_management.pid
+      - name: test
+        run: |
+          sleep 1
+          curl http://localhost:8003/init
+          curl http://localhost:8003/create_order -d @order.json
+          resp=$(curl http://localhost:8003/orders)
+          echo "$resp"
+          if [[ $resp == *"\"total\":24.15"* ]]; then
+            echo -e "Execution Success!"
+          else
+            echo -e "Execution Fail!"
+            exit 1
+          fi
+          kill -9 `cat sales_tax_rate.pid`
+          rm sales_tax_rate.pid
+          kill -9 `cat order_management.pid`
+          rm order_management.pid

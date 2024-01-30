@@ -21,6 +21,4 @@ RUN cargo build --target wasm32-wasi --release
 # This line builds the AOT Wasm binary
 RUN /root/.wasmedge/bin/wasmedgec target/wasm32-wasi/release/order_management.wasm order_management.wasm
 
-FROM scratch
 ENTRYPOINT [ "order_management.wasm" ]
-COPY --link --from=build /src/order_management.wasm /order_management.wasm

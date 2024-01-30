@@ -1,1 +1,1 @@
-{"order_id":123, "product_id":321,"quantity":2,"subtotal":20.0,"shipping_address":"123 Main St, Anytown USA","shipping_zip":"78701","total":0.0}
+{"order_id":123, "product_id":321,"quantity":2,"subtotal":20.0,"shipping_address":"123 Main St, Anytown USA","shipping_zip":"78701", "shipping_cost": 2.5, "total":0.0}

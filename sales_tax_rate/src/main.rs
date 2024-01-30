@@ -1,9 +1,10 @@
-use std::net::SocketAddr;
-use std::convert::Infallible;
-use std::str;
-use hyper::service::{make_service_fn, service_fn};
-use hyper::{Body, Method, Request, Response, StatusCode, Server};
+use std::{convert::Infallible, net::SocketAddr, str};
+
 use csv::Reader;
+use hyper::{
+    service::{make_service_fn, service_fn},
+    Body, Method, Request, Response, Server, StatusCode,
+};
 
 /// This is our service handler. It receives a Request, routes on its
 /// path, and returns a Future of a Response.
@@ -50,13 +51,8 @@ async fn handle_request(req: Request<Body>) -> Result<Response<Body>, anyhow::Er
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = SocketAddr::from(([0, 0, 0, 0], 8001));
-    let make_svc = make_service_fn(|_| {
-        async move {
-            Ok::<_, Infallible>(service_fn(move |req| {
-                handle_request(req)
-            }))
-        }
-    });
+    let make_svc =
+        make_service_fn(|_| async move { Ok::<_, Infallible>(service_fn(handle_request)) });
     let server = Server::bind(&addr).serve(make_svc);
     dbg!("Server started on port 8001");
     if let Err(e) = server.await {

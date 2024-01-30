@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "order_management",
+    "sales_tax_rate",
+]
+resolver = "2"
